@@ -1,12 +1,21 @@
 import proj1_helpers
 import implementations
+import numpy as np
 
-print("coucou")
+print("Extracting dataset")
+y_train, X_train, id1 = proj1_helpers.load_csv_data("train.csv",True)
+y_test, X_test, id2 = proj1_helpers.load_csv_data("test.csv",True)
+print(X_train.shape)
 
-y_train, X_train, id1 = proj1_helpers.load_csv_data("train.csv")
-y_test, X_test, id2 = proj1_helpers.load_csv_data("test.csv")
+batch_size = 128
 
-w, _ = implementations.least_squares(y_train,X_train)
+print("Splitting dataset into batch")
+X_batch = np.array_split(X_train, int(X_train.shape[0]/batch_size))
+y_batch = np.array_split(y_train, int(y_train.shape[0]/batch_size))
+
+print(X_batch[0].shape)
+
+w, _ = implementations.ridge_regression(y_batch[0],X_train[0],1)
 
 print(w)
 
