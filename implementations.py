@@ -47,11 +47,11 @@ def stochastic_gradient_descent1(y, tx, initial_w, max_iters, gamma):
        
     return w,loss
 
-def ridge_regression(y, tx, lambda_): 
-    """calculate the ridge regression solution using normal equations"""  
-    N = int(y.shape[0])
-    a = tx.T.dot(tx) + 2*N*lambda_*np.eye(N)
+
+
+def ridge_regression(y, tx, lamb):
+    """implement ridge regression."""
+    aI = lamb * np.identity(tx.shape[1])
+    a = tx.T.dot(tx) + aI
     b = tx.T.dot(y)
-    w = np.linalg.solve(a, b)
-    loss = compute_loss(y, tx, w)
-    return w,loss
+    return np.linalg.solve(a, b)
