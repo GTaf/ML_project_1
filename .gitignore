@@ -6,3 +6,6 @@ __pycache__/implementations.cpython-36.pyc
 __pycache__/proj1_helpers.cpython-36.pyc
 *.pyc
 .ipynb_checkpoints/ML_Project-checkpoint.ipynb
+pred1.csv
+*.csv
+.ipynb_checkpoints/ML_Project_separate_data-checkpoint.ipynb
