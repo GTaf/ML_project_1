@@ -25,7 +25,7 @@ def compute_gradient(y, tx, w):
     """Compute the gradient"""
     N = int(y.shape[0])
     e = y - tx.dot(w)
-    print N
+    print(N)
     return -(np.transpose(tx).dot(e))/(N)
 
 def least_squares_GD(y, tx, initial_w, max_iters, gamma,computeLoss = True):
@@ -34,9 +34,9 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma,computeLoss = True):
     for n_iter in range(max_iters):
         
         grad = compute_gradient(y, tx, w)
-        print grad
+        print(grad)
         w = w - gamma*grad
-        print w
+        # print(w)
     if computeLoss:
         loss = compute_loss(y, tx, w)
         return w,loss
