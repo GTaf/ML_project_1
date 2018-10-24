@@ -1,5 +1,12 @@
 import numpy as np
 
+def standardize(x):
+    """Standardize the original data set."""
+    mean_x = np.mean(x)
+    x = x - mean_x
+    std_x = np.std(x)
+    x = x / std_x
+    return x
 
 def calculate_mse(e):
     """Calculate the mse for vector e"""
@@ -25,7 +32,7 @@ def compute_gradient(y, tx, w):
     """Compute the gradient"""
     N = int(y.shape[0])
     e = y - tx.dot(w)
-    print(N)
+
     return -(np.transpose(tx).dot(e))/(N)
 
 def least_squares_GD(y, tx, initial_w, max_iters, gamma,computeLoss = True):
@@ -36,7 +43,27 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma,computeLoss = True):
         grad = compute_gradient(y, tx, w)
         print(grad)
         w = w - gamma*grad
-        # print(w)
+        gamma = 0.5*gamma
+        print(w)
+    if computeLoss:
+        loss = compute_loss(y, tx, w)
+        return w,loss
+    else:
+        return w
+    
+def least_squares_GD_adapt_step(y, tx, initial_w, max_iters, gamma,computeLoss = True):
+    """Gradient descent algorithm."""
+    w = initial_w
+    grad = compute_gradient(y,tx, w)
+    for n_iter in range(max_iters):
+        
+        w1 = w - gamma*grad
+        grad1 = compute_gradient(y,tx,w1)
+        gamma = ((grad-grad1).T.dot(w-w1))/((grad-grad1).T.dot(grad-grad1))
+        w = w1
+        grad = grad1
+        print gamma
+        
     if computeLoss:
         loss = compute_loss(y, tx, w)
         return w,loss
