@@ -2,10 +2,12 @@ import numpy as np
 
 def standardize(x):
     """Standardize the original data set."""
-    mean_x = np.mean(x)
+    mean_x = np.mean(x,axis=0)
     x = x - mean_x
-    std_x = np.std(x)
-    x = x / std_x
+    std_x = np.std(x,axis=0)
+    std_x = np.where(std==0,1,std)
+    if (std_x!=0):
+        x = x / std_x
     return x
 
 def calculate_mse(e):
