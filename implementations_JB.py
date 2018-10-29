@@ -36,6 +36,13 @@ def compute_gradient(y, tx, w):
 
     return -(np.transpose(tx).dot(e))/(N)
 
+def compute_gradient_lasso(y, tx, w, lambda_):
+    """Compute the gradient"""
+    N = int(y.shape[0])
+    e = y - tx.dot(w)
+
+    return -(np.transpose(tx).dot(e))/(N) + lambda_*np.sign(w)
+
 def least_squares_GD(y, tx, initial_w, max_iters, gamma,computeLoss = True):
     """Gradient descent algorithm."""
     w = initial_w
@@ -63,8 +70,7 @@ def least_squares_GD_adapt_step(y, tx, initial_w, max_iters, gamma,computeLoss =
         gamma = ((grad-grad1).T.dot(w-w1))/((grad-grad1).T.dot(grad-grad1))
         w = w1
         grad = grad1
-        print (gamma)
-        
+   
     if computeLoss:
         loss = compute_loss(y, tx, w)
         return w,loss
@@ -91,3 +97,21 @@ def ridge_regression(y, tx, lambda_):
     w = np.linalg.solve(a, b)
     loss = compute_loss(y, tx, w)
     return w,loss
+
+def lasso_GD_adapt_step(y, tx, initial_w, max_iters, gamma, lambda_, computeLoss = True):
+    """Gradient descent algorithm."""
+    w = initial_w
+    grad = compute_gradient(y,tx, w)
+    for n_iter in range(max_iters):
+        
+        w1 = w - gamma*grad
+        grad1 = compute_gradient_lasso(y,tx,w1,lambda_)
+        gamma = ((grad-grad1).T.dot(w-w1))/((grad-grad1).T.dot(grad-grad1))
+        w = w1
+        grad = grad1
+    print np.mean(grad)    
+    if computeLoss:
+        loss = compute_loss(y, tx, w)
+        return w,loss
+    else:
+        return w
