@@ -171,7 +171,7 @@ def calculate_loss(y, tx, w):
 
 def calculate_gradient(y, tx, w):
     """compute the gradient of loss."""
-    gradient = tx.T.dot(sigmoid(tx.dot(w) - y))
+    gradient = tx.T.dot(sigmoid(tx.dot(w)) - y)
     print gradient.shape
     return gradient
 
