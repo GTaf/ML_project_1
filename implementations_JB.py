@@ -163,30 +163,34 @@ def sigmoid(t):
     """
     return 1 / (1 + np.exp(-t))
 
-def calculate_loss(y, tx, w):
+def calculate_loss(y, tx, w, pred):
     """compute the cost by negative log likelihood."""
-    pred = sigmoid(tx.dot(w))
     loss = y.T.dot(np.log(pred)) + (1 - y).T.dot(np.log(1 - pred))
+    print loss
     return np.squeeze(- loss)
 
-def calculate_gradient(y, tx, w):
+def calculate_gradient(y, tx, w, pred):
     """compute the gradient of loss."""
-    gradient = tx.T.dot(sigmoid(tx.dot(w)) - y)
+    gradient = tx.T.dot(pred - y)
     print gradient.shape
     return gradient
 
-def calculate_hessian(y, tx, w):
+def calculate_hessian(y, tx, w, pred):
     """return the hessian of the loss function."""
-    a = sigmoid(tx.dot(w))
-    len_a = len(a)
-    S = np.diag(np.diag( (a * (np.ones(len_a) - a))))
+
+    n = int(y.shape[0])
+    S = pred*(1-pred)*np.eye(n)
+    print "S"
     b = tx.T.dot(S)
+    print "B"
     hessian = b.dot(tx)
+    print "H"
     return hessian
 
 def logistic_regression_helper(y, tx, w):
     """return the loss, gradient, and hessian."""
-    return calculate_loss(y, tx, w), calculate_gradient(y, tx, w), calculate_hessian(y, tx, w)
+    pred = sigmoid(tx.dot(w))
+    return calculate_loss(y, tx, w, pred), calculate_gradient(y, tx, w, pred), calculate_hessian(y, tx, w, pred)
 
 def learning_by_newton_method(y, tx, w):
     """
@@ -223,9 +227,10 @@ def penalized_logistic_regression(y, tx, w, lambda_):
     """
     Return the loss, gradient, and hessian
     """
-    loss = calculate_loss(y, tx, w) + lambda_*np.linalg.norm(w, 2)**2
-    gradient = calculate_gradient(y, tx, w) + 2*lambda_*w
-    hessian = calculate_hessian(y, tx, w) + 2*lambda_
+    pred = sigmoid(tx.dot(w))
+    loss = calculate_loss(y, tx, w, pred) + lambda_*np.linalg.norm(w, 2)**2
+    gradient = calculate_gradient(y, tx, w, pred) + 2*lambda_*w
+    hessian = calculate_hessian(y, tx, w, pred) + 2*lambda_
     return loss, gradient, hessian
 
 def learning_by_penalized_gradient(y, tx, w, gamma, lambda_):
