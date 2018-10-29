@@ -151,3 +151,38 @@ def logistic_regression_imp(y, tx, initial_w, max_iter, gamma_):
     
     return losses[-1], w
 
+def penalized_logistic_regression(y, tx, w, lambda_):
+    """return the loss, gradient, and hessian."""
+    loss = calculate_loss(y, tx, w) + lambda_*np.linalg.norm(w, 2)**2
+    gradient = calculate_gradient(y, tx, w) + 2*lambda_*w
+    hessian = calculate_hessian(y, tx, w) + 2*lambda_
+    return loss, gradient, hessian
+
+def learning_by_penalized_gradient(y, tx, w, gamma, lambda_):
+    """
+    Do one step of gradient descent, using the penalized logistic regression.
+    Return the loss and updated w.
+    """
+    loss, gradient, hessian = penalized_logistic_regression(y, tx, w, lambda_)
+    w  = w - gamma*np.linalg.inv(hessian).dot(gradient)
+    return loss, w
+
+def logistic_regression_penalized_imp(y, tx, initial_w, max_iter, gamma, lambda_):
+
+    # init parameters
+    threshold = 1e-8
+    losses = []
+
+    w = np.zeros((tx.shape[1], 1))
+
+    # start the logistic regression
+    for iter in range(max_iter):
+        # get loss and update w.
+        loss, w = learning_by_penalized_gradient(y, tx, w, gamma, lambda_)
+
+        # converge criterion
+        losses.append(loss)
+        if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
+            break
+    
+    return losses[-1], w
